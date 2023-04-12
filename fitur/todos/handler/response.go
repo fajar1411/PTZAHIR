@@ -2,17 +2,18 @@ package handler
 
 import (
 	"time"
+
 	"todo/fitur/todos"
 )
 
 type FormResponse struct {
 	ID           uint      `json:"id"`
-	Title        string    `json:"title"`
-	Priority     string    `json:"priority"`
-	IsActive     bool      `json:"is_active"`
-	Updatedat    time.Time `json:"updatedAt"`
-	Createdat    time.Time `json:"createdAt"`
 	ActivitiesID uint      `json:"activity_group_id"`
+	Title        string    `json:"title"`
+	IsActive     bool      `json:"is_active"`
+	Priority     string    `json:"priority"`
+	Createdat    time.Time `json:"createdAt"`
+	Updatedat    time.Time `json:"updatedAt"`
 }
 
 func ToFormResponse(data todos.TodoEntities) FormResponse {
@@ -27,11 +28,11 @@ func ToFormResponse(data todos.TodoEntities) FormResponse {
 	}
 }
 
-// func ListCoreToRespons(dataentitys []activities.ActivitiesEntities) []FormResponse {
-// 	var activres []FormResponse
+func ListCoreToRespons(dataentitys []todos.TodoEntities) []FormResponse {
+	var activres []FormResponse
 
-// 	for _, val := range dataentitys {
-// 		activres = append(activres, ToFormResponse(val))
-// 	}
-// 	return activres
-// }
+	for _, val := range dataentitys {
+		activres = append(activres, ToFormResponse(val))
+	}
+	return activres
+}
