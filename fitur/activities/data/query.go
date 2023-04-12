@@ -35,6 +35,8 @@ func (ad *activitiesData) FormData(newActivity activities.ActivitiesEntities) (a
 		return activities.ActivitiesEntities{}, errors.New(msg)
 	}
 	newActivity.ID = activitiesGorm.ID
+	newActivity.Createdat = activitiesGorm.CreatedAt
+	newActivity.Updatedat = activitiesGorm.UpdatedAt
 	return newActivity, nil
 }
 
