@@ -30,16 +30,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_USER }}/todo:latest   
- 
-    - 
-      name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@v0.1.7
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSHKEY }}
-        port: ${{ secrets.PORT }}
+        tags: ${{ secrets.DOCKER_USER }}/todo:latest  
         script: |
           cd todo
           git pull origin main 
