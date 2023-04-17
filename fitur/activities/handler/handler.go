@@ -28,14 +28,14 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 	}
 
 	if Inputform.Email == "" {
-		return c.JSON(http.StatusNotAcceptable, helper.Responsive{
-			Status:  http.StatusText(echo.ErrNotAcceptable.Code),
+		return c.JSON(http.StatusBadRequest, helper.Responsive{
+			Status:  http.StatusText(echo.ErrBadRequest.Code),
 			Massage: "Check email input",
 			Data:    map[string]interface{}{},
 		})
 	} else if Inputform.Title == "" {
-		return c.JSON(http.StatusNotAcceptable, helper.Responsive{
-			Status:  http.StatusText(echo.ErrNotAcceptable.Code),
+		return c.JSON(http.StatusBadRequest, helper.Responsive{
+			Status:  http.StatusText(echo.ErrBadRequest.Code),
 			Massage: "Check title input",
 			Data:    map[string]interface{}{},
 		})
@@ -45,10 +45,7 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 	res, err := ad.ActivitiesServices.FormData(dataCore)
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponsFail{
-			Status:  "Error",
-			Massage: "Data failed to save",
-		})
+		return c.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
 	}
 
 	dataResp := ToFormResponse(res)
