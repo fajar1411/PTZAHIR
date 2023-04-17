@@ -6,7 +6,7 @@ import (
 
 type ActivitiesEntities struct {
 	ID        uint
-	Title     string `validate:"required,min=3,required"`
+	Title     string `validate:"required"`
 	Email     string `validate:"required,email"`
 	Createdat time.Time
 	Updatedat time.Time

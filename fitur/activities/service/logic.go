@@ -24,11 +24,14 @@ func NewService(ad activities.ActivitiesData, vld *validator.Validate) activitie
 
 // FormData implements activities.ActivitiesService
 func (ac *activitiesCase) FormData(newActivity activities.ActivitiesEntities) (activities.ActivitiesEntities, error) {
-	valerr := ac.vld.Struct(&newActivity)
-	if valerr != nil {
-		log.Println("validation error", valerr)
-		msg := validasi.ValidationErrorHandle(valerr)
-		return activities.ActivitiesEntities{}, errors.New(msg)
+
+	errEmail := ac.vld.Var(newActivity.Email, "required,email")
+	if errEmail != nil {
+		return activities.ActivitiesEntities{}, errors.New("invalid format email")
+	}
+	errtitle := ac.vld.Var(newActivity.Title, "required")
+	if errtitle != nil {
+		return activities.ActivitiesEntities{}, errors.New("title cannot be null")
 	}
 
 	res, err := ac.qry.FormData(newActivity)
