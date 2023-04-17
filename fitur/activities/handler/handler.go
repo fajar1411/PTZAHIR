@@ -60,11 +60,22 @@ func (ad *ActivitiesHandler) GetActivity(c echo.Context) error {
 }
 
 func (ad *ActivitiesHandler) GetId(c echo.Context) error {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, errcnv := strconv.Atoi(c.Param("id"))
+	if errcnv != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "Invalid ID",
+		})
+	}
 
 	res, err := ad.ActivitiesServices.GetId(id)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
+		resid := strconv.Itoa(int(res.ID))
+
+		return c.JSON(http.StatusNotFound, helper.ResponsFail{
+			Status:  "Not Found",
+			Massage: fmt.Sprintf(" Activity with ID " + resid + " Not Found "),
+		})
 	}
 	dataResp := ToFormResponse(res)
 	return c.JSON(http.StatusOK, helper.Responsive{

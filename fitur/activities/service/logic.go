@@ -69,14 +69,14 @@ func (ac *activitiesCase) GetActivity() ([]activities.ActivitiesEntities, error)
 // GetId implements activities.ActivitiesService
 func (ac *activitiesCase) GetId(id int) (activities.ActivitiesEntities, error) {
 	if id <= 0 {
-		log.Println("User belum terdaftar")
+		log.Println("activities belum terdaftar")
 	}
 	res, err := ac.qry.GetId(id)
 	if err != nil {
 		log.Println(err)
 		msg := ""
 		if strings.Contains(err.Error(), "not found") {
-			msg = "user tidak ditemukan harap login lagi"
+			msg = "id activities not found"
 		} else {
 			msg = "terdapat masalah pada server"
 		}
