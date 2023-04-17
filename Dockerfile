@@ -8,7 +8,7 @@ WORKDIR /app
 
 ##copy seluruh file ke app
 ADD . /app
-
+EXPOSE 3030
 ##buat executeable
 RUN go build -o todo .
 
