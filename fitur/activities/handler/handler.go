@@ -62,14 +62,6 @@ func (ad *ActivitiesHandler) GetActivity(c echo.Context) error {
 func (ad *ActivitiesHandler) GetId(c echo.Context) error {
 	id, errcnv := strconv.Atoi(c.Param("id"))
 	if errcnv != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
-			Status:  "Error",
-			Massage: "Invalid ID",
-		})
-	}
-
-	res, err := ad.ActivitiesServices.GetId(id)
-	if err != nil {
 		resid := strconv.Itoa(id)
 
 		return c.JSON(http.StatusNotFound, helper.ResponsFail{
@@ -77,6 +69,12 @@ func (ad *ActivitiesHandler) GetId(c echo.Context) error {
 			Massage: fmt.Sprintf(" Activity with ID " + resid + " Not Found "),
 		})
 	}
+
+	res, err := ad.ActivitiesServices.GetId(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.FailedResponse("Failed to get data"))
+	}
+
 	dataResp := ToFormResponse(res)
 	return c.JSON(http.StatusOK, helper.Responsive{
 		Status:  "Success",
@@ -90,9 +88,10 @@ func (ad *ActivitiesHandler) Updata(c echo.Context) error {
 	id, errcnv := strconv.Atoi(c.Param("id"))
 
 	if errcnv != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+		reid := strconv.Itoa(id)
+		return c.JSON(http.StatusNotFound, helper.ResponsFail{
 			Status:  "Error",
-			Massage: "Invalid ID",
+			Massage: fmt.Sprintf(" Activity with ID " + reid + " Not Found "),
 		})
 	}
 	Inputform := ActivitiesRequest{}
@@ -102,7 +101,7 @@ func (ad *ActivitiesHandler) Updata(c echo.Context) error {
 			Massage: "Failed to bind data, Check your input",
 		})
 	}
-	reid := strconv.Itoa(id)
+
 	res, err := ad.ActivitiesServices.Updata(id, ActivitiesRequestToUserCore(Inputform))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
@@ -110,12 +109,7 @@ func (ad *ActivitiesHandler) Updata(c echo.Context) error {
 			Massage: err.Error(),
 		})
 	}
-	if res.ID == 0 {
-		return c.JSON(http.StatusNotFound, helper.ResponsFail{
-			Status:  "Error",
-			Massage: fmt.Sprintf(" Activity with ID " + reid + " Not Found "),
-		})
-	}
+
 	dataResp := ToFormResponse(res)
 	return c.JSON(http.StatusOK, helper.Responsive{
 		Status:  "Success",
