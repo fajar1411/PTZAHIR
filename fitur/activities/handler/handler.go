@@ -20,21 +20,24 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 
 	errbind := c.Bind(&Inputform)
 	if errbind != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
-			Status:  "Error",
-			Massage: "Check your input",
+		return c.JSON(http.StatusBadRequest, helper.Responsive{
+			Status:  http.StatusText(echo.ErrBadRequest.Code),
+			Massage: errbind.Error(),
+			Data:    map[string]interface{}{},
 		})
 	}
 
 	if Inputform.Email == "" {
-		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
-			Status:  "Empty",
+		return c.JSON(http.StatusNotAcceptable, helper.Responsive{
+			Status:  http.StatusText(echo.ErrNotAcceptable.Code),
 			Massage: "Check email input",
+			Data:    map[string]interface{}{},
 		})
 	} else if Inputform.Title == "" {
-		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
-			Status:  "Empty",
+		return c.JSON(http.StatusNotAcceptable, helper.Responsive{
+			Status:  http.StatusText(echo.ErrNotAcceptable.Code),
 			Massage: "Check title input",
+			Data:    map[string]interface{}{},
 		})
 	}
 	dataCore := ActivitiesRequestToUserCore(Inputform)

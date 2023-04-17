@@ -37,7 +37,7 @@ func (ac *activitiesCase) FormData(newActivity activities.ActivitiesEntities) (a
 	res, err := ac.qry.FormData(newActivity)
 	if err != nil {
 		msg2 := ""
-		if strings.Contains(err.Error(), "Duplicated") {
+		if strings.Contains(err.Error(), "Duplicate") {
 			msg2 = "email already exists"
 		} else if strings.Contains(err.Error(), "Empty") {
 			msg2 = "email not allowed empty"
@@ -112,7 +112,7 @@ func (ac *activitiesCase) Updata(id int, datup activities.ActivitiesEntities) (a
 	res, err := ac.qry.Updata(id, datup)
 	if err != nil {
 		msg2 := ""
-		if strings.Contains(err.Error(), "duplicated") {
+		if strings.Contains(err.Error(), "Duplicate") {
 			msg2 = "email sudah terdaftar"
 		} else if strings.Contains(err.Error(), "not found") {
 			msg2 = "id activities not found"
