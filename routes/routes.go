@@ -14,11 +14,11 @@ func NewHandlerActivities(Service activities.ActivitiesService, e *echo.Echo) {
 		ActivitiesServices: Service,
 	}
 
-	e.POST("/activities/form", handlers.FormData)
-	// e.GET("/activities", handlers.GetActivity)
-	// e.GET("/activities/:id", handlers.GetId)
-	// e.PATCH("/activities/:id", handlers.Updata)
-	// e.DELETE("/activities/:id", handlers.Delete)
+	e.POST("/activity-groups", handlers.FormData)
+	e.GET("/activities", handlers.GetActivity)
+	e.GET("/activities/:id", handlers.GetId)
+	e.PATCH("/activities/:id", handlers.Updata)
+	e.DELETE("/activities/:id", handlers.Delete)
 
 }
 

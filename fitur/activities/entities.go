@@ -13,18 +13,17 @@ type ActivitiesEntities struct {
 }
 
 type ActivitiesService interface {
-	FormData(newActivity ActivitiesEntities) (data ActivitiesEntities, row int, err error)
-	// GetActivity() ([]ActivitiesEntities, error)
-	// GetId(id int) (ActivitiesEntities, error)
-	// Updata(id int, datup ActivitiesEntities) (ActivitiesEntities, error)
-	// Delete(id int) error
+	FormData(newActivity ActivitiesEntities) (ActivitiesEntities, error)
+	GetActivity() ([]ActivitiesEntities, error)
+	GetId(id int) (ActivitiesEntities, error)
+	Updata(id int, datup ActivitiesEntities) (ActivitiesEntities, error)
+	Delete(id int) error
 }
 
 type ActivitiesData interface {
-	FormData(newActivity ActivitiesEntities) (data ActivitiesEntities, row int, err error)
-	// GetActivity() ([]ActivitiesEntities, error)
-	// GetId(id int) (ActivitiesEntities, error)
-	// Updata(id int, datup ActivitiesEntities) (ActivitiesEntities, error)
-	// Delete(id int) error
-	UniqueData(insert ActivitiesEntities) (row int, err error)
+	FormData(newActivity ActivitiesEntities) (ActivitiesEntities, error)
+	GetActivity() ([]ActivitiesEntities, error)
+	GetId(id int) (ActivitiesEntities, error)
+	Updata(id int, datup ActivitiesEntities) (ActivitiesEntities, error)
+	Delete(id int) error
 }

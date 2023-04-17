@@ -1,6 +1,9 @@
 package data
 
 import (
+	"errors"
+	"log"
+	"strings"
 	"todo/fitur/activities"
 
 	"gorm.io/gorm"
@@ -17,121 +20,99 @@ func NewActivities(db *gorm.DB) activities.ActivitiesData {
 }
 
 // FormData implements activities.ActivitiesData
-func (ad *activitiesData) FormData(newActivity activities.ActivitiesEntities) (data activities.ActivitiesEntities, row int, err error) {
-	var datas Activities
+func (ad *activitiesData) FormData(newActivity activities.ActivitiesEntities) (activities.ActivitiesEntities, error) {
 	activitiesGorm := FromEntities(newActivity)
 	tx := ad.db.Create(&activitiesGorm) // proses insert data
+
 	if tx.Error != nil {
-		return data, 0, tx.Error
+		log.Println("register query error", tx.Error.Error())
+		msg := ""
+		if strings.Contains(tx.Error.Error(), "Duplicate") {
+			msg = "data is duplicated"
+		} else {
+			msg = "server error"
+		}
+		return activities.ActivitiesEntities{}, errors.New(msg)
 	}
-	return datas.ModelsToCore(), int(tx.RowsAffected), nil
+	newActivity.ID = activitiesGorm.ID
+	newActivity.Createdat = activitiesGorm.CreatedAt
+	newActivity.Updatedat = activitiesGorm.UpdatedAt
+	return newActivity, nil
 }
 
-// UniqueData implements activities.ActivitiesData
-func (ad *activitiesData) UniqueData(insert activities.ActivitiesEntities) (row int, err error) {
-	var datas Activities
-	activitiesGorm := FromEntities(insert)
-	tx := ad.db.Where("email = ?", activitiesGorm.Email).First(&datas)
+// GetActivity implements activities.ActivitiesData
+func (ac *activitiesData) GetActivity() ([]activities.ActivitiesEntities, error) {
+	var activ []Activities
+
+	tx := ac.db.Raw("SELECT activities.id, activities.title, activities.email, activities.created_at, activities.updated_at From activities WHERE activities.deleted_at IS NULL").Find(&activ)
+
 	if tx.Error != nil {
-		return 0, tx.Error
+		log.Println("All Activities error", tx.Error.Error())
+		return []activities.ActivitiesEntities{}, tx.Error
 	}
-	return int(tx.RowsAffected), nil
+	var activcore = ListModelEntities(activ)
+	return activcore, nil
 }
 
-// // FormData implements activities.ActivitiesData
-// func (ad *activitiesData) FormData(newActivity activities.ActivitiesEntities) (activities.ActivitiesEntities, error) {
-// 	activitiesGorm := FromEntities(newActivity)
-//
+// GetId implements activities.ActivitiesData
+func (ac *activitiesData) GetId(id int) (activities.ActivitiesEntities, error) {
+	var activ Activities
 
-// 	if tx.Error != nil {
-// 		log.Println("register query error", tx.Error.Error())
-// 		msg := ""
-// 		if strings.Contains(tx.Error.Error(), "Duplicate") {
-// 			msg = "data is duplicated"
-// 		} else {
-// 			msg = "server error"
-// 		}
-// 		return activities.ActivitiesEntities{}, errors.New(msg)
-// 	}
-// 	newActivity.ID = activitiesGorm.ID
-// 	newActivity.Createdat = activitiesGorm.CreatedAt
-// 	newActivity.Updatedat = activitiesGorm.UpdatedAt
-// 	return newActivity, nil
-// }
+	tx := ac.db.Raw("SELECT activities.id, activities.title, activities.email, activities.created_at, activities.updated_at From activities Where activities.id= ? AND activities.deleted_at IS NULL", id).Find(&activ)
 
-// // GetActivity implements activities.ActivitiesData
-// func (ac *activitiesData) GetActivity() ([]activities.ActivitiesEntities, error) {
-// 	var activ []Activities
+	if tx.Error != nil {
+		log.Println("All Activities error", tx.Error.Error())
+		return activities.ActivitiesEntities{}, tx.Error
+	}
+	var activcore = activ.ModelsToCore()
+	return activcore, nil
+}
 
-// 	tx := ac.db.Raw("SELECT activities.id, activities.title, activities.email, activities.created_at, activities.updated_at From activities WHERE activities.deleted_at IS NULL").Find(&activ)
+// Updata implements activities.ActivitiesData
+func (ad *activitiesData) Updata(id int, datup activities.ActivitiesEntities) (activities.ActivitiesEntities, error) {
+	activ := Activities{}
 
-// 	if tx.Error != nil {
-// 		log.Println("All Activities error", tx.Error.Error())
-// 		return []activities.ActivitiesEntities{}, tx.Error
-// 	}
-// 	var activcore = ListModelEntities(activ)
-// 	return activcore, nil
-// }
+	acgorm := FromEntities(datup)
+	qry := ad.db.Model(&activ).Where("id = ?", id).Updates(&acgorm)
 
-// // GetId implements activities.ActivitiesData
-// func (ac *activitiesData) GetId(id int) (activities.ActivitiesEntities, error) {
-// 	var activ Activities
+	affrows := qry.RowsAffected
+	if affrows == 0 {
+		log.Println("no rows affected")
+		return activities.ActivitiesEntities{}, errors.New("no data updated")
+	}
+	err := qry.Error
+	if err != nil {
+		log.Println("update activities query error", err.Error())
+		return activities.ActivitiesEntities{}, err
+	}
+	tx := ad.db.Raw("SELECT activities.id, activities.title, activities.email, activities.created_at, activities.updated_at From activities Where activities.id= ?", id).Find(&activ)
 
-// 	tx := ac.db.Raw("SELECT activities.id, activities.title, activities.email, activities.created_at, activities.updated_at From activities Where activities.id= ? AND activities.deleted_at IS NULL", id).Find(&activ)
+	if tx.Error != nil {
+		log.Println("All Activities error", tx.Error.Error())
+		return activities.ActivitiesEntities{}, tx.Error
+	}
+	var activcore = activ.ModelsToCore()
+	return activcore, nil
 
-// 	if tx.Error != nil {
-// 		log.Println("All Activities error", tx.Error.Error())
-// 		return activities.ActivitiesEntities{}, tx.Error
-// 	}
-// 	var activcore = activ.ModelsToCore()
-// 	return activcore, nil
-// }
+}
 
-// // Updata implements activities.ActivitiesData
-// func (ad *activitiesData) Updata(id int, datup activities.ActivitiesEntities) (activities.ActivitiesEntities, error) {
-// 	activ := Activities{}
+// Delete implements activities.ActivitiesData
+func (ad *activitiesData) Delete(id int) error {
+	activ := Activities{}
+	qry := ad.db.Delete(&activ, id)
 
-// 	acgorm := FromEntities(datup)
-// 	qry := ad.db.Model(&activ).Where("id = ?", id).Updates(&acgorm)
+	rowAffect := qry.RowsAffected
+	if rowAffect <= 0 {
+		log.Println("no data processed")
+		return errors.New("no user has delete")
+	}
 
-// 	affrows := qry.RowsAffected
-// 	if affrows == 0 {
-// 		log.Println("no rows affected")
-// 		return activities.ActivitiesEntities{}, errors.New("no data updated")
-// 	}
-// 	err := qry.Error
-// 	if err != nil {
-// 		log.Println("update activities query error", err.Error())
-// 		return activities.ActivitiesEntities{}, err
-// 	}
-// 	tx := ad.db.Raw("SELECT activities.id, activities.title, activities.email, activities.created_at, activities.updated_at From activities Where activities.id= ?", id).Find(&activ)
+	err := qry.Error
+	if err != nil {
+		log.Println("delete query error", err.Error())
+		return errors.New("delete account fail")
+	}
 
-// 	if tx.Error != nil {
-// 		log.Println("All Activities error", tx.Error.Error())
-// 		return activities.ActivitiesEntities{}, tx.Error
-// 	}
-// 	var activcore = activ.ModelsToCore()
-// 	return activcore, nil
+	return nil
 
-// }
-
-// // Delete implements activities.ActivitiesData
-// func (ad *activitiesData) Delete(id int) error {
-// 	activ := Activities{}
-// 	qry := ad.db.Delete(&activ, id)
-
-// 	rowAffect := qry.RowsAffected
-// 	if rowAffect <= 0 {
-// 		log.Println("no data processed")
-// 		return errors.New("no user has delete")
-// 	}
-
-// 	err := qry.Error
-// 	if err != nil {
-// 		log.Println("delete query error", err.Error())
-// 		return errors.New("delete account fail")
-// 	}
-
-// 	return nil
-
-// }
+}
