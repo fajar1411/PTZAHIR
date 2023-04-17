@@ -44,7 +44,7 @@ func (td *todoData) AddTodo(newTodo todos.TodoEntities) (todos.TodoEntities, err
 
 // Update implements todos.TodoData
 func (td *todoData) Update(id int, input todos.TodoEntities) (todos.TodoEntities, error) {
-	todo := Todo{}
+	todo := Todos{}
 	data := Todata(input)
 	tx := td.db.Model(&todo).Where("id = ?", id).Updates(&data)
 
@@ -68,7 +68,7 @@ func (td *todoData) Update(id int, input todos.TodoEntities) (todos.TodoEntities
 
 // GetAll implements todos.TodoData
 func (td *todoData) GetAll(activid int) ([]todos.TodoEntities, error) {
-	var todo []Todo
+	var todo []Todos
 
 	tx := td.db.Raw("SELECT todos.id, todos.title, todos.priority, todos.is_active, todos.created_at, todos.updated_at, todos.activities_id From todos WHERE todos.activities_id= ?", activid).Find(&todo)
 

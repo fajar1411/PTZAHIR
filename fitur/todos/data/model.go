@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Todo struct {
+type Todos struct {
 	gorm.Model
 	Title        string
 	Priority     string
@@ -16,8 +16,8 @@ type Todo struct {
 	Activities   data.Activities
 }
 
-func Todata(data todos.TodoEntities) Todo {
-	return Todo{
+func Todata(data todos.TodoEntities) Todos {
+	return Todos{
 		Model: gorm.Model{ID: data.ID, UpdatedAt: data.Updatedat,
 			CreatedAt: data.Createdat,
 		},
@@ -28,7 +28,7 @@ func Todata(data todos.TodoEntities) Todo {
 	}
 }
 
-func (data *Todo) ModelsToCore() todos.TodoEntities { //fungsi yang mengambil data dari  user gorm(model.go)  dan merubah data ke entities usercore
+func (data *Todos) ModelsToCore() todos.TodoEntities { //fungsi yang mengambil data dari  user gorm(model.go)  dan merubah data ke entities usercore
 	return todos.TodoEntities{
 		ID:           data.ID,
 		Title:        data.Title,
@@ -40,7 +40,7 @@ func (data *Todo) ModelsToCore() todos.TodoEntities { //fungsi yang mengambil da
 	}
 }
 
-func ToCore(data Todo) todos.TodoEntities {
+func ToCore(data Todos) todos.TodoEntities {
 	return todos.TodoEntities{
 		ID:           data.ID,
 		Title:        data.Title,
@@ -51,7 +51,7 @@ func ToCore(data Todo) todos.TodoEntities {
 	}
 }
 
-func ListModelTOCore(dataModel []Todo) []todos.TodoEntities { //fungsi yang mengambil data dari  user gorm(model.go)  dan merubah data ke entities usercore
+func ListModelTOCore(dataModel []Todos) []todos.TodoEntities { //fungsi yang mengambil data dari  user gorm(model.go)  dan merubah data ke entities usercore
 	var dataCore []todos.TodoEntities
 	for _, value := range dataModel {
 		dataCore = append(dataCore, value.ModelsToCore())
