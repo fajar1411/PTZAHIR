@@ -70,7 +70,7 @@ func (ad *ActivitiesHandler) GetId(c echo.Context) error {
 
 	res, err := ad.ActivitiesServices.GetId(id)
 	if err != nil {
-		resid := strconv.Itoa(int(res.ID))
+		resid := strconv.Itoa(id)
 
 		return c.JSON(http.StatusNotFound, helper.ResponsFail{
 			Status:  "Not Found",
