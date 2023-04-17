@@ -1,7 +1,6 @@
 package data
 
 import (
-	"todo/fitur/activities/data"
 	"todo/fitur/todos"
 
 	"gorm.io/gorm"
@@ -9,11 +8,10 @@ import (
 
 type Todos struct {
 	gorm.Model
-	Title        string
-	Priority     string
-	IsActive     bool
-	ActivitiesID uint
-	Activities   data.Activities
+	ActivityGroupID uint
+	Title           string
+	IsActive        bool
+	Priority        string
 }
 
 func Todata(data todos.TodoEntities) Todos {
@@ -21,10 +19,10 @@ func Todata(data todos.TodoEntities) Todos {
 		Model: gorm.Model{ID: data.ID, UpdatedAt: data.Updatedat,
 			CreatedAt: data.Createdat,
 		},
-		Title:        data.Title,
-		Priority:     data.Priority,
-		IsActive:     data.IsActive,
-		ActivitiesID: data.ActivitiesID,
+		Title:           data.Title,
+		Priority:        data.Priority,
+		IsActive:        data.IsActive,
+		ActivityGroupID: data.ActivitiesID,
 	}
 }
 
@@ -36,7 +34,7 @@ func (data *Todos) ModelsToCore() todos.TodoEntities { //fungsi yang mengambil d
 		IsActive:     data.IsActive,
 		Createdat:    data.CreatedAt,
 		Updatedat:    data.UpdatedAt,
-		ActivitiesID: data.ActivitiesID,
+		ActivitiesID: data.ActivityGroupID,
 	}
 }
 
@@ -47,7 +45,7 @@ func ToCore(data Todos) todos.TodoEntities {
 		Priority:     data.Priority,
 		IsActive:     data.IsActive,
 		Updatedat:    data.UpdatedAt,
-		ActivitiesID: data.ActivitiesID,
+		ActivitiesID: data.ActivityGroupID,
 	}
 }
 
