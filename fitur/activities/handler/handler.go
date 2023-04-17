@@ -3,7 +3,6 @@ package handler
 import (
 	"net/http"
 	"todo/fitur/activities"
-	"todo/helper"
 
 	"github.com/labstack/echo/v4"
 )
@@ -18,9 +17,9 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 
 	errbind := c.Bind(&Inputform)
 	if errbind != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
-			Status:  "Error",
-			Massage: "Failed to bind data, Check your input",
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "Error",
+			"message": "Failed to bind data, Check your input",
 		})
 	}
 
@@ -28,22 +27,22 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 	res, row, err := ad.ActivitiesServices.FormData(dataCore)
 
 	if row == -1 {
-		return c.JSON(http.StatusInternalServerError, helper.ResponsFail{
-			Status:  "Bad Request",
-			Massage: err.Error(),
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "Bad Request",
+			"message": err.Error(),
 		})
 	}
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponsFail{
-			Status:  "Error",
-			Massage: "Data failed to save",
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "Error",
+			"message": "Data failed to save",
 		})
 	}
 	dataResp := ToFormResponse(res)
-	return c.JSON(http.StatusCreated, helper.Responsive{
-		Status:  "Success",
-		Massage: "Success",
-		Data:    dataResp,
+	return c.JSON(http.StatusCreated, map[string]interface{}{
+		"status":  "Success",
+		"message": "Success",
+		"data":    dataResp,
 	})
 
 }

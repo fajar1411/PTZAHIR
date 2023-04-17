@@ -9,8 +9,8 @@ type FormResponse struct {
 	ID        uint      `json:"id"`
 	Title     string    `json:"title"`
 	Email     string    `json:"email"`
-	Updatedat time.Time `json:"updatedAt"`
-	Createdat time.Time `json:"createdAt"`
+	Updatedat time.Time `json:"updated_At"`
+	Createdat time.Time `json:"created_At"`
 }
 
 func ToFormResponse(data activities.ActivitiesEntities) FormResponse {
