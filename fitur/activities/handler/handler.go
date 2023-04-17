@@ -20,12 +20,19 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 
 	errbind := c.Bind(&Inputform)
 	if errbind != nil {
-		return c.JSON(http.StatusNotFound, helper.FailedResponse("notfound"))
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "Failed to bind data, Check your input",
+		})
 	}
+
 	dataCore := ActivitiesRequestToUserCore(Inputform)
 	res, err := ad.ActivitiesServices.FormData(dataCore)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
+		return c.JSON(http.StatusInternalServerError, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "Data failed to save",
+		})
 	}
 	dataResp := ToFormResponse(res)
 	return c.JSON(http.StatusCreated, helper.Responsive{
@@ -67,14 +74,34 @@ func (ad *ActivitiesHandler) GetId(c echo.Context) error {
 }
 
 func (ad *ActivitiesHandler) Updata(c echo.Context) error {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, errcnv := strconv.Atoi(c.Param("id"))
+
+	if errcnv != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "Invalid ID",
+		})
+	}
 	Inputform := ActivitiesRequest{}
 	if err := c.Bind(&Inputform); err != nil {
-		return c.JSON(http.StatusBadRequest, "format inputan salah")
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "Failed to bind data, Check your input",
+		})
 	}
+	reid := strconv.Itoa(id)
 	res, err := ad.ActivitiesServices.Updata(id, ActivitiesRequestToUserCore(Inputform))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+			Status:  "Error",
+			Massage: err.Error(),
+		})
+	}
+	if res.ID == 0 {
+		return c.JSON(http.StatusNotFound, helper.ResponsFail{
+			Status:  "Error",
+			Massage: fmt.Sprintf(" Activity with ID " + reid + " Not Found "),
+		})
 	}
 	dataResp := ToFormResponse(res)
 	return c.JSON(http.StatusOK, helper.Responsive{
