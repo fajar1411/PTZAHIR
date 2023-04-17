@@ -62,25 +62,30 @@ func (ad *ActivitiesHandler) GetActivity(c echo.Context) error {
 func (ad *ActivitiesHandler) GetId(c echo.Context) error {
 	id, errcnv := strconv.Atoi(c.Param("id"))
 	if errcnv != nil {
-		resid := strconv.Itoa(id)
-
-		return c.JSON(http.StatusNotFound, helper.ResponsFail{
-			Status:  "Not Found",
-			Massage: fmt.Sprintf(" Activity with ID " + resid + " Not Found "),
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "Invalid ID",
 		})
 	}
 
 	res, err := ad.ActivitiesServices.GetId(id)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.FailedResponse("Failed to get data"))
+		return c.JSON(http.StatusNotFound, helper.FailedResponse(err.Error()))
 	}
-
 	dataResp := ToFormResponse(res)
-	return c.JSON(http.StatusOK, helper.Responsive{
-		Status:  "Success",
-		Massage: "Success",
-		Data:    dataResp,
-	})
+	reid := strconv.Itoa(id)
+	if dataResp.ID == 0 {
+		return c.JSON(http.StatusNotFound, helper.ResponsFail{
+			Status:  "Error",
+			Massage: fmt.Sprintf(" Activity with ID " + reid + " Not Found "),
+		})
+	} else {
+		return c.JSON(http.StatusOK, helper.Responsive{
+			Status:  "Success",
+			Massage: "Success",
+			Data:    dataResp,
+		})
+	}
 
 }
 
@@ -88,10 +93,9 @@ func (ad *ActivitiesHandler) Updata(c echo.Context) error {
 	id, errcnv := strconv.Atoi(c.Param("id"))
 
 	if errcnv != nil {
-		reid := strconv.Itoa(id)
-		return c.JSON(http.StatusNotFound, helper.ResponsFail{
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
 			Status:  "Error",
-			Massage: fmt.Sprintf(" Activity with ID " + reid + " Not Found "),
+			Massage: "Invalid ID",
 		})
 	}
 	Inputform := ActivitiesRequest{}
@@ -104,18 +108,22 @@ func (ad *ActivitiesHandler) Updata(c echo.Context) error {
 
 	res, err := ad.ActivitiesServices.Updata(id, ActivitiesRequestToUserCore(Inputform))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+		return c.JSON(http.StatusNotFound, helper.FailedResponse(err.Error()))
+	}
+	dataResp := ToFormResponse(res)
+	reid := strconv.Itoa(id)
+	if dataResp.ID == 0 {
+		return c.JSON(http.StatusNotFound, helper.ResponsFail{
 			Status:  "Error",
-			Massage: err.Error(),
+			Massage: fmt.Sprintf(" Activity with ID " + reid + " Not Found "),
+		})
+	} else {
+		return c.JSON(http.StatusOK, helper.Responsive{
+			Status:  "Success",
+			Massage: "Success",
+			Data:    dataResp,
 		})
 	}
-
-	dataResp := ToFormResponse(res)
-	return c.JSON(http.StatusOK, helper.Responsive{
-		Status:  "Success",
-		Massage: "Success",
-		Data:    dataResp,
-	})
 
 }
 

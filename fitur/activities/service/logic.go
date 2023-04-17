@@ -102,7 +102,7 @@ func (ac *activitiesCase) Updata(id int, datup activities.ActivitiesEntities) (a
 	}
 	title := datup.Title
 	if title != "" {
-		errTitle := ac.vld.Var(title, "required,min=3,required")
+		errTitle := ac.vld.Var(title, "required")
 		if errTitle != nil {
 			log.Println("validation error", errTitle)
 			msg := validasi.ValidationErrorHandle(errTitle)
