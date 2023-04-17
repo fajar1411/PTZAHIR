@@ -15,10 +15,10 @@ func NewHandlerActivities(Service activities.ActivitiesService, e *echo.Echo) {
 	}
 
 	e.POST("/activities/form", handlers.FormData)
-	e.GET("/activities", handlers.GetActivity)
-	e.GET("/activities/:id", handlers.GetId)
-	e.PATCH("/activities/:id", handlers.Updata)
-	e.DELETE("/activities/:id", handlers.Delete)
+	// e.GET("/activities", handlers.GetActivity)
+	// e.GET("/activities/:id", handlers.GetId)
+	// e.PATCH("/activities/:id", handlers.Updata)
+	// e.DELETE("/activities/:id", handlers.Delete)
 
 }
 
