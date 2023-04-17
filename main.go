@@ -14,7 +14,7 @@ func main() {
 	cfg := config.GetConfig()
 	db := mysql.InitDB(cfg)
 	// db := prostgest.InitDB(cfg)
-	migrasti:= migrasi.MigrateDB(db)
+	migrasi.MigrateDB(db)
 	e := echo.New()
 
 	factory.InitFactory(e, db)
