@@ -37,10 +37,10 @@ func (ac *activitiesCase) FormData(newActivity activities.ActivitiesEntities) (a
 	res, err := ac.qry.FormData(newActivity)
 	if err != nil {
 		msg2 := ""
-		if strings.Contains(err.Error(), "duplicated") {
+		if strings.Contains(err.Error(), "Duplicated") {
 			msg2 = "email already exists"
-		} else if strings.Contains(err.Error(), "empty") {
-			msg2 = "title not allowed empty"
+		} else if strings.Contains(err.Error(), "Empty") {
+			msg2 = "email not allowed empty"
 		} else {
 			msg2 = "server error"
 		}
@@ -88,7 +88,7 @@ func (ac *activitiesCase) GetId(id int) (activities.ActivitiesEntities, error) {
 // Updata implements activities.ActivitiesService
 func (ac *activitiesCase) Updata(id int, datup activities.ActivitiesEntities) (activities.ActivitiesEntities, error) {
 	if id <= 0 {
-		log.Println("Activities Tidak Ada")
+		log.Println("activities belum terdaftar")
 	}
 
 	email := datup.Email
@@ -114,6 +114,8 @@ func (ac *activitiesCase) Updata(id int, datup activities.ActivitiesEntities) (a
 		msg2 := ""
 		if strings.Contains(err.Error(), "duplicated") {
 			msg2 = "email sudah terdaftar"
+		} else if strings.Contains(err.Error(), "not found") {
+			msg2 = "id activities not found"
 		} else {
 			msg2 = "server error"
 		}

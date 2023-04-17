@@ -22,15 +22,27 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 	if errbind != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
 			Status:  "Error",
-			Massage: "Failed to bind data, Check your input",
+			Massage: "Check your input",
 		})
 	}
 
+	if Inputform.Email == "" {
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+			Status:  "Empty",
+			Massage: "Check email input",
+		})
+	} else if Inputform.Title == "" {
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+			Status:  "Empty",
+			Massage: "Check title input",
+		})
+	}
 	dataCore := ActivitiesRequestToUserCore(Inputform)
 
 	res, err := ad.ActivitiesServices.FormData(dataCore)
+
 	if err != nil {
-		return c.JSON(http.StatusNotFound, helper.ResponsFail{
+		return c.JSON(http.StatusInternalServerError, helper.ResponsFail{
 			Status:  "Error",
 			Massage: "Data failed to save",
 		})

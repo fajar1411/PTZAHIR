@@ -25,10 +25,10 @@ func (ad *activitiesData) FormData(newActivity activities.ActivitiesEntities) (a
 	tx := ad.db.Create(&activitiesGorm) // proses insert data
 
 	if tx.Error != nil {
-		log.Println("register query error", tx.Error.Error())
+		log.Println("activities query error", tx.Error.Error())
 		msg := ""
-		if strings.Contains(tx.Error.Error(), "Duplicate") {
-			msg = "data is duplicated"
+		if strings.Contains(tx.Error.Error(), "Duplicated") {
+			msg = "email already exists"
 		} else {
 			msg = "server error"
 		}
