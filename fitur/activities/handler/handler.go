@@ -74,9 +74,10 @@ func (ad *ActivitiesHandler) GetActivity(c echo.Context) error {
 func (ad *ActivitiesHandler) GetId(c echo.Context) error {
 	id, errcnv := strconv.Atoi(c.Param("id"))
 	if errcnv != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+		return c.JSON(http.StatusBadRequest, helper.Responsive{
 			Status:  "Error",
 			Massage: "Invalid ID",
+			Data:    map[string]interface{}{},
 		})
 	}
 
@@ -87,9 +88,10 @@ func (ad *ActivitiesHandler) GetId(c echo.Context) error {
 	dataResp := ToFormResponse(res)
 	reid := strconv.Itoa(id)
 	if dataResp.ID == 0 {
-		return c.JSON(http.StatusNotFound, helper.ResponsFail{
+		return c.JSON(http.StatusNotFound, helper.Responsive{
 			Status:  "Error",
 			Massage: fmt.Sprintf(" Activity with ID " + reid + " Not Found "),
+			Data:    map[string]interface{}{},
 		})
 	} else {
 		return c.JSON(http.StatusOK, helper.Responsive{
@@ -143,9 +145,12 @@ func (ad *ActivitiesHandler) Delete(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := ad.ActivitiesServices.Delete(id)
+	reid := strconv.Itoa(id)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": "internal server error",
+		return c.JSON(http.StatusInternalServerError, helper.Responsive{
+			Status:  "Error",
+			Massage: fmt.Sprintf(" Activity with ID " + reid + " Not Found "),
+			Data:    map[string]interface{}{},
 		})
 	}
 	resid := strconv.Itoa(id)

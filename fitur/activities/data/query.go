@@ -58,7 +58,7 @@ func (ac *activitiesData) GetActivity() ([]activities.ActivitiesEntities, error)
 func (ac *activitiesData) GetId(id int) (activities.ActivitiesEntities, error) {
 	var activ Activities
 
-	tx := ac.db.Raw("SELECT activities.id, activities.title, activities.email, activities.created_at, activities.updated_at From activities WHERE activities.ID= ? AND activities.deleted_at IS NULL", id).Find(&activ)
+	tx := ac.db.Raw("SELECT activities.id, activities.title, activities.email, activities.created_at, activities.updated_at From activities WHERE activities.id= ? AND activities.deleted_at IS NULL", id).Find(&activ)
 
 	if tx.Error != nil {
 		log.Println("All Activities error", tx.Error.Error())

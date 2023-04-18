@@ -8,8 +8,8 @@ import (
 
 type Activities struct {
 	gorm.Model
-	Title string `gorm:"type:char(50);not null"`
-	Email string `gorm:"type:varchar(50);unique;not null"`
+	Title string
+	Email string `gorm:"unique;not null"`
 }
 
 // register
