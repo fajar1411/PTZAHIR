@@ -63,20 +63,6 @@ func (th *TodosHandler) Update(c echo.Context) error {
 
 }
 
-func (ad *TodosHandler) GetAll(c echo.Context) error {
-	id, _ := strconv.Atoi(c.Param("id"))
-	res, err := ad.TodoServices.GetAll(id)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
-	}
-	dataResp := ListCoreToRespons(res)
-	return c.JSON(http.StatusOK, helper.Responsive{
-		Status:  "Success",
-		Massage: "Success",
-		Data:    dataResp,
-	})
-
-}
 func (th *TodosHandler) DeleteData(c echo.Context) error {
 	id, ercnv := strconv.Atoi(c.Param("id"))
 	strIdTodo := strconv.Itoa(id)
@@ -106,4 +92,66 @@ func (th *TodosHandler) DeleteData(c echo.Context) error {
 		Massage: "Success",
 		Data:    map[string]interface{}{},
 	})
+}
+func (th *TodosHandler) GetData(c echo.Context) error {
+	id, ercnv := strconv.Atoi(c.Param("id"))
+	strIdTodo := strconv.Itoa(id)
+
+	if ercnv != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "Invalid ID",
+		})
+	}
+
+	data, row, err := th.TodoServices.GetData(id)
+
+	if row == 0 {
+		return c.JSON(http.StatusNotFound, helper.Responsive{
+			Status:  "Not Found",
+			Massage: "Todo with ID " + strIdTodo + " Not Found",
+			Data:    map[string]interface{}{},
+		})
+
+	}
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "failed to get data",
+		})
+	}
+	dataresp := ToFormResponse(data)
+	return c.JSON(http.StatusOK, helper.Responsive{
+		Status:  "Success",
+		Massage: "Success",
+		Data:    dataresp,
+	})
+}
+
+func (ad *TodosHandler) GetAll(c echo.Context) error {
+	math := c.QueryParam("activity_group_id")
+	res, row, err := ad.TodoServices.GetAll(math)
+	dataResp := ListCoreToRespons(res)
+	if row == 0 {
+		return c.JSON(http.StatusOK, helper.Responsive{
+			Status:  "Success",
+			Massage: "Success",
+			Data:    dataResp,
+		})
+
+	}
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "Failed to get all data",
+		})
+	}
+
+	return c.JSON(http.StatusOK, helper.Responsive{
+		Status:  "Success",
+		Massage: "Success",
+		Data:    dataResp,
+	})
+
 }

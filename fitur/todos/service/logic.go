@@ -82,25 +82,39 @@ func (tc *todoCase) Update(id int, input todos.TodoEntities) (todos.TodoEntities
 	return res, nil
 }
 
-// GetAll implements todos.TodoService
-func (tc *todoCase) GetAll(activid int) ([]todos.TodoEntities, error) {
-	all, err := tc.qry.GetAll(activid)
+// // GetAll implements todos.TodoService
+// func (tc *todoCase) GetAll(activid int) ([]todos.TodoEntities, error) {
+// 	all, err := tc.qry.GetAll(activid)
 
-	if err != nil {
-		msg := ""
-		if strings.Contains(err.Error(), "not found") {
-			msg = "Activities not found"
-		} else {
-			msg = "internal server error"
-		}
-		return nil, errors.New(msg)
-	}
-	return all, nil
-}
+// 	if err != nil {
+// 		msg := ""
+// 		if strings.Contains(err.Error(), "not found") {
+// 			msg = "Activities not found"
+// 		} else {
+// 			msg = "internal server error"
+// 		}
+// 		return nil, errors.New(msg)
+// 	}
+// 	return all, nil
+// }
 
 // DeleteData implements todos.TodoService
 func (tc *todoCase) DeleteData(id int) (row int, err error) {
 	row, err = tc.qry.DeleteData(id)
 
 	return row, err
+}
+
+// GetData implements todos.TodoService
+func (tc *todoCase) GetData(id int) (data todos.TodoEntities, row int, err error) {
+	data, row, err = tc.qry.GetData(id)
+
+	return data, row, err
+}
+
+// GetAll implements todos.TodoService
+func (tc *todoCase) GetAll(param string) (data []todos.TodoEntities, row int, err error) {
+	data, row, err = tc.qry.GetAll(param)
+
+	return data, row, err
 }

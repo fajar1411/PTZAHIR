@@ -13,6 +13,8 @@ type todoData struct {
 	db *gorm.DB
 }
 
+// GetAll implements todos.TodoData
+
 func NewTodo(db *gorm.DB) todos.TodoData {
 	return &todoData{
 		db: db,
@@ -67,18 +69,18 @@ func (td *todoData) Update(id int, input todos.TodoEntities) (todos.TodoEntities
 }
 
 // GetAll implements todos.TodoData
-func (td *todoData) GetAll(activid int) ([]todos.TodoEntities, error) {
-	var todo []Todos
+// func (td *todoData) GetAll(activid int) ([]todos.TodoEntities, error) {
+// 	var todo []Todos
 
-	tx := td.db.Raw("SELECT todos.id, todos.title, todos.priority, todos.is_active, todos.created_at, todos.updated_at, todos.activity_group_id From todos WHERE todos.activity_group_id= ?", activid).Find(&todo)
+// 	tx := td.db.Raw("SELECT todos.id, todos.title, todos.priority, todos.is_active, todos.created_at, todos.updated_at, todos.activity_group_id From todos WHERE todos.activity_group_id= ?", activid).Find(&todo)
 
-	if tx.Error != nil {
-		log.Println("All Activities error", tx.Error.Error())
-		return []todos.TodoEntities{}, tx.Error
-	}
-	var activcore = ListModelTOCore(todo)
-	return activcore, nil
-}
+// 	if tx.Error != nil {
+// 		log.Println("All Activities error", tx.Error.Error())
+// 		return []todos.TodoEntities{}, tx.Error
+// 	}
+// 	var activcore = ListModelTOCore(todo)
+// 	return activcore, nil
+// }
 
 // DeleteData implements todos.TodoData
 func (td *todoData) DeleteData(id int) (row int, err error) {
@@ -89,4 +91,25 @@ func (td *todoData) DeleteData(id int) (row int, err error) {
 		return 0, tx.Error
 	}
 	return int(tx.RowsAffected), nil
+}
+
+// GetData implements todos.TodoData
+func (td *todoData) GetData(id int) (data todos.TodoEntities, row int, err error) {
+	var datas Todos
+
+	tx := td.db.Raw("SELECT todos.id, todos.title, todos.priority, todos.is_active, todos.created_at, todos.updated_at, todos.activity_group_id From todos WHERE todos.id= ?", id).Find(&datas)
+	if tx.Error != nil {
+		return data, 0, tx.Error
+	}
+	return datas.ModelsToCore(), int(tx.RowsAffected), nil
+}
+func (td *todoData) GetAll(param string) (data []todos.TodoEntities, row int, err error) {
+	var todo []Todos
+	tx := td.db.Raw("SELECT todos.id, todos.title, todos.priority, todos.is_active, todos.created_at, todos.updated_at, todos.activity_group_id From todos WHERE todos.activity_group_id= ?", param).Find(&todo)
+	if tx.Error != nil {
+		log.Println("All Activities error", tx.Error.Error())
+		return data, 0, tx.Error
+	}
+	var activcore = ListModelTOCore(todo)
+	return activcore, int(tx.RowsAffected), nil
 }
