@@ -50,18 +50,29 @@ func (tc *todoCase) Update(id int, input todos.TodoEntities) (todos.TodoEntities
 	if id <= 0 {
 		log.Println("Activities Tidak Ada")
 	}
-	valerr := tc.vld.Struct(&input)
-	if valerr != nil {
-		log.Println("validation error", valerr)
-		msgvalid := validasi.ValidationErrorHandle(valerr)
-		return todos.TodoEntities{}, errors.New(msgvalid)
+
+	errTitle := tc.vld.Var(input.Title, "required")
+	if errTitle != nil {
+		return todos.TodoEntities{}, errors.New("dont empty")
+	}
+	errpriority := tc.vld.Var(input.Priority, "required")
+	if errpriority != nil {
+		return todos.TodoEntities{}, errors.New("dont empty")
+	}
+	erractive := tc.vld.Var(input.IsActive, "required")
+	if erractive != nil {
+		return todos.TodoEntities{}, errors.New("dont empty")
+	}
+	errstatus := tc.vld.Var(input.Status, "required")
+	if errstatus != nil {
+		return todos.TodoEntities{}, errors.New("dont empty")
 	}
 	res, err := tc.qry.Update(id, input)
 	if err != nil {
 		// fmt.Println(err)
 		msg := ""
 		if strings.Contains(err.Error(), "not found") {
-			msg = "content family not found"
+			msg = "id not found"
 		} else {
 			msg = "internal server error"
 		}
