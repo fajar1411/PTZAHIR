@@ -21,25 +21,25 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 	errbind := c.Bind(&Inputform)
 	if errbind != nil {
 		return c.JSON(http.StatusBadRequest, helper.Responsive{
-			Status:  http.StatusText(echo.ErrBadRequest.Code),
-			Massage: errbind.Error(),
+			Status:  "Error",
+			Massage: "Failed to bind data, Check your input",
 			Data:    map[string]interface{}{},
 		})
 	}
 
-	if Inputform.Email == "" {
-		return c.JSON(http.StatusBadRequest, helper.Responsive{
-			Status:  http.StatusText(echo.ErrBadRequest.Code),
-			Massage: "email cannot be null",
-			Data:    map[string]interface{}{},
-		})
-	} else if Inputform.Title == "" {
-		return c.JSON(http.StatusBadRequest, helper.Responsive{
-			Status:  http.StatusText(echo.ErrBadRequest.Code),
-			Massage: "title cannot be null",
-			Data:    map[string]interface{}{},
-		})
-	}
+	// if Inputform.Email == "" {
+	// 	return c.JSON(http.StatusBadRequest, helper.Responsive{
+	// 		Status:  http.StatusText(echo.ErrBadRequest.Code),
+	// 		Massage: "email cannot be null",
+	// 		Data:    map[string]interface{}{},
+	// 	})
+	// } else if Inputform.Title == "" {
+	// 	return c.JSON(http.StatusBadRequest, helper.Responsive{
+	// 		Status:  http.StatusText(echo.ErrBadRequest.Code),
+	// 		Massage: "title cannot be null",
+	// 		Data:    map[string]interface{}{},
+	// 	})
+	// }
 	dataCore := ActivitiesRequestToUserCore(Inputform)
 
 	res, row, err := ad.ActivitiesServices.FormData(dataCore)
@@ -52,9 +52,11 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 	}
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.FailedResponse(err.Error()))
+		return c.JSON(http.StatusInternalServerError, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "Data failed to save",
+		})
 	}
-
 	dataResp := ToFormResponse(res)
 	return c.JSON(http.StatusCreated, helper.Responsive{
 		Status:  "Success",

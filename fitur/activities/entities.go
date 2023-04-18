@@ -26,4 +26,5 @@ type ActivitiesData interface {
 	GetId(id int) (ActivitiesEntities, error)
 	Updata(id int, datup ActivitiesEntities) (ActivitiesEntities, error)
 	Delete(id int) error
+	UniqueData(insert ActivitiesEntities) (row int, err error)
 }

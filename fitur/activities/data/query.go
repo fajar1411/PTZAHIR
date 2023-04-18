@@ -116,3 +116,17 @@ func (ad *activitiesData) Delete(id int) error {
 	return nil
 
 }
+
+// UniqueData implements activities.ActivitiesData
+func (ad *activitiesData) UniqueData(insert activities.ActivitiesEntities) (row int, err error) {
+	var datas Activities
+
+	insertdata := FromEntities(insert)
+
+	tx := ad.db.Where("email = ?", insertdata.Email).First(&datas)
+
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+	return int(tx.RowsAffected), nil
+}

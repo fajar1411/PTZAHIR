@@ -27,27 +27,19 @@ func (ac *activitiesCase) FormData(newActivity activities.ActivitiesEntities) (d
 
 	errEmail := ac.vld.Var(newActivity.Email, "required,email")
 	if errEmail != nil {
-		return data, 0, errors.New("invalid format email")
+		return data, -1, errors.New("invalid format email")
 	}
 	errtitle := ac.vld.Var(newActivity.Title, "required")
 	if errtitle != nil {
-		return activities.ActivitiesEntities{}, -1, errors.New("title cannot be null")
+		return data, -1, errors.New("title cannot be null")
 	}
-
+	rowUnique, _ := ac.qry.UniqueData(newActivity)
+	if rowUnique == 1 {
+		return data, -1, errors.New("email already exists")
+	}
 	res, row, err := ac.qry.FormData(newActivity)
-	if err != nil {
-		msg2 := ""
-		if strings.Contains(err.Error(), "Duplicate") {
-			msg2 = "email already exists"
-		} else if strings.Contains(err.Error(), "Empty") {
-			msg2 = "email not allowed empty"
-		} else {
-			msg2 = "server error"
-		}
-		return data, -1, errors.New(msg2)
-	}
 
-	return res, row, nil
+	return res, row, err
 }
 
 // GetActivity implements activities.ActivitiesService
