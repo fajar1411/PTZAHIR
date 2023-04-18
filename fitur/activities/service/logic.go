@@ -59,22 +59,13 @@ func (ac *activitiesCase) GetActivity() ([]activities.ActivitiesEntities, error)
 }
 
 // GetId implements activities.ActivitiesService
-func (ac *activitiesCase) GetId(id int) (activities.ActivitiesEntities, error) {
+func (ac *activitiesCase) GetId(id int) (data activities.ActivitiesEntities, row int, err error) {
 	if id <= 0 {
 		log.Println("activities belum terdaftar")
 	}
-	res, err := ac.qry.GetId(id)
-	if err != nil {
-		log.Println(err)
-		msg := ""
-		if strings.Contains(err.Error(), "not found") {
-			msg = "id activities not found"
-		} else {
-			msg = "terdapat masalah pada server"
-		}
-		return activities.ActivitiesEntities{}, errors.New(msg)
-	}
-	return res, nil
+	res, row, err := ac.qry.GetId(id)
+
+	return res, row, err
 }
 
 // Updata implements activities.ActivitiesService

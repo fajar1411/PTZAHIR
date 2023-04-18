@@ -55,17 +55,17 @@ func (ac *activitiesData) GetActivity() ([]activities.ActivitiesEntities, error)
 }
 
 // GetId implements activities.ActivitiesData
-func (ac *activitiesData) GetId(id int) (activities.ActivitiesEntities, error) {
+func (ac *activitiesData) GetId(id int) (data activities.ActivitiesEntities, row int, err error) {
 	var activ Activities
 
 	tx := ac.db.Raw("SELECT activities.id, activities.title, activities.email, activities.created_at, activities.updated_at From activities WHERE activities.id= ? AND activities.deleted_at IS NULL", id).Find(&activ)
 
 	if tx.Error != nil {
 		log.Println("All Activities error", tx.Error.Error())
-		return activities.ActivitiesEntities{}, tx.Error
+		return data, 0, tx.Error
 	}
 	var activcore = activ.ModelsToCore()
-	return activcore, nil
+	return activcore, int(tx.RowsAffected), nil
 }
 
 // Updata implements activities.ActivitiesData

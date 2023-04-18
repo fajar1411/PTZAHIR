@@ -27,19 +27,6 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 		})
 	}
 
-	// if Inputform.Email == "" {
-	// 	return c.JSON(http.StatusBadRequest, helper.Responsive{
-	// 		Status:  http.StatusText(echo.ErrBadRequest.Code),
-	// 		Massage: "email cannot be null",
-	// 		Data:    map[string]interface{}{},
-	// 	})
-	// } else if Inputform.Title == "" {
-	// 	return c.JSON(http.StatusBadRequest, helper.Responsive{
-	// 		Status:  http.StatusText(echo.ErrBadRequest.Code),
-	// 		Massage: "title cannot be null",
-	// 		Data:    map[string]interface{}{},
-	// 	})
-	// }
 	dataCore := ActivitiesRequestToUserCore(Inputform)
 
 	res, row, err := ad.ActivitiesServices.FormData(dataCore)
@@ -82,33 +69,31 @@ func (ad *ActivitiesHandler) GetActivity(c echo.Context) error {
 func (ad *ActivitiesHandler) GetId(c echo.Context) error {
 	id, errcnv := strconv.Atoi(c.Param("id"))
 	if errcnv != nil {
-		return c.JSON(http.StatusBadRequest, helper.Responsive{
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
 			Status:  "Error",
 			Massage: "Invalid ID",
-			Data:    map[string]interface{}{},
 		})
 	}
 
-	res, err := ad.ActivitiesServices.GetId(id)
+	res, row, err := ad.ActivitiesServices.GetId(id)
+	reid := strconv.Itoa(id)
+	if row == 0 {
+		return c.JSON(http.StatusBadRequest, helper.Responsive{
+			Status:  "Error",
+			Massage: "Activity with ID " + reid + " Not Found",
+			Data:    map[string]interface{}{},
+		})
+	}
 	if err != nil {
-		return c.JSON(http.StatusNotFound, helper.FailedResponse(err.Error()))
+		return c.JSON(http.StatusInternalServerError, helper.FailedResponse("Failed to get data"))
 	}
 	dataResp := ToFormResponse(res)
-	reid := strconv.Itoa(id)
-	if dataResp.ID == 0 {
-		return c.JSON(http.StatusNotFound, helper.Responsive{
-			Status:  "Error",
-			Massage: fmt.Sprintf(" Activity with ID " + reid + " Not Found "),
-			Data:    map[string]interface{}{},
-		})
-	} else {
-		return c.JSON(http.StatusOK, helper.Responsive{
-			Status:  "Success",
-			Massage: "Success",
-			Data:    dataResp,
-		})
-	}
 
+	return c.JSON(http.StatusOK, helper.Responsive{
+		Status:  "Success",
+		Massage: "Success",
+		Data:    dataResp,
+	})
 }
 
 func (ad *ActivitiesHandler) Updata(c echo.Context) error {
