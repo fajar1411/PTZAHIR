@@ -53,7 +53,7 @@ func (td *todoData) Update(id int, input todos.TodoEntities) (todos.TodoEntities
 		return todos.TodoEntities{}, tx.Error
 
 	}
-	if tx.RowsAffected <= 0 {
+	if tx.RowsAffected == 0 {
 		log.Println("update todo query error : data not found")
 		return todos.TodoEntities{}, errors.New("not found")
 	}

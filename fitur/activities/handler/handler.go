@@ -35,8 +35,8 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 		})
 	} else if Inputform.Title == "" {
 		return c.JSON(http.StatusBadRequest, helper.Responsive{
-			Status:  http.StatusText(echo.ErrBadRequest.Code),
-			Massage: "Check title input",
+			Status:  "title cannot be null",
+			Massage: "title cannot be null",
 			Data:    map[string]interface{}{},
 		})
 	}
@@ -109,7 +109,7 @@ func (ad *ActivitiesHandler) Updata(c echo.Context) error {
 	if errcnv != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
 			Status:  "Error",
-			Massage: "Invalid ID",
+			Massage: "Not Found",
 		})
 	}
 	Inputform := ActivitiesRequest{}
