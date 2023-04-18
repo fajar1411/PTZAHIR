@@ -51,22 +51,22 @@ func (tc *todoCase) Update(id int, input todos.TodoEntities) (todos.TodoEntities
 		log.Println("Activities Tidak Ada")
 	}
 
-	errTitle := tc.vld.Var(input.Title, "required")
-	if errTitle != nil {
-		return todos.TodoEntities{}, errors.New("dont empty")
-	}
-	errpriority := tc.vld.Var(input.Priority, "required")
-	if errpriority != nil {
-		return todos.TodoEntities{}, errors.New("dont empty")
-	}
-	erractive := tc.vld.Var(input.IsActive, "required")
-	if erractive != nil {
-		return todos.TodoEntities{}, errors.New("dont empty")
-	}
-	errstatus := tc.vld.Var(input.Status, "required")
-	if errstatus != nil {
-		return todos.TodoEntities{}, errors.New("dont empty")
-	}
+	// errTitle := tc.vld.Var(input.Title, "required")
+	// if errTitle != nil {
+	// 	return todos.TodoEntities{}, errors.New("dont empty")
+	// }
+	// errpriority := tc.vld.Var(input.Priority, "required")
+	// if errpriority != nil {
+	// 	return todos.TodoEntities{}, errors.New("dont empty")
+	// }
+	// erractive := tc.vld.Var(input.IsActive, "required")
+	// if erractive != nil {
+	// 	return todos.TodoEntities{}, errors.New("dont empty")
+	// }
+	// errstatus := tc.vld.Var(input.Status, "required")
+	// if errstatus != nil {
+	// 	return todos.TodoEntities{}, errors.New("dont empty")
+	// }
 	res, err := tc.qry.Update(id, input)
 	if err != nil {
 		// fmt.Println(err)
