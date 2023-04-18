@@ -122,8 +122,9 @@ func (ad *activitiesData) UniqueData(insert activities.ActivitiesEntities) (row 
 	var datas Activities
 
 	insertdata := FromEntities(insert)
+	tx := ad.db.Raw("SELECT activities.id, activities.title, activities.email, activities.created_at, activities.updated_at From activities WHERE activities.email= ? AND activities.deleted_at IS NULL", insertdata.Email).Find(&datas)
 
-	tx := ad.db.Where("email = ?", insertdata.Email).First(&datas)
+	// tx := ad.db.Where("email = ?", insertdata.Email).First(&datas)
 
 	if tx.Error != nil {
 		return 0, tx.Error
