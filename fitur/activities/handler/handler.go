@@ -44,10 +44,9 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 
 	res, row, err := ad.ActivitiesServices.FormData(dataCore)
 	if row == -1 {
-		return c.JSON(http.StatusBadRequest, helper.Responsive{
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
 			Status:  "Bad Request",
 			Massage: err.Error(),
-			Data:    map[string]interface{}{},
 		})
 	}
 

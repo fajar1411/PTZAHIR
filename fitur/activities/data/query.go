@@ -102,7 +102,7 @@ func (ad *activitiesData) Delete(id int) error {
 	qry := ad.db.Delete(&activ, id)
 
 	rowAffect := qry.RowsAffected
-	if rowAffect <= 0 {
+	if rowAffect == 0 {
 		log.Println("no data processed")
 		return errors.New("no user has delete")
 	}
