@@ -30,12 +30,12 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 	if Inputform.Email == "" {
 		return c.JSON(http.StatusBadRequest, helper.Responsive{
 			Status:  http.StatusText(echo.ErrBadRequest.Code),
-			Massage: "Check email input",
+			Massage: "email cannot be null",
 			Data:    map[string]interface{}{},
 		})
 	} else if Inputform.Title == "" {
 		return c.JSON(http.StatusBadRequest, helper.Responsive{
-			Status:  "title cannot be null",
+			Status:  http.StatusText(echo.ErrBadRequest.Code),
 			Massage: "title cannot be null",
 			Data:    map[string]interface{}{},
 		})
@@ -109,7 +109,7 @@ func (ad *ActivitiesHandler) Updata(c echo.Context) error {
 	if errcnv != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
 			Status:  "Error",
-			Massage: "Not Found",
+			Massage: "Invalid ID",
 		})
 	}
 	Inputform := ActivitiesRequest{}
