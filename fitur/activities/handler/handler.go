@@ -42,10 +42,17 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 	}
 	dataCore := ActivitiesRequestToUserCore(Inputform)
 
-	res, err := ad.ActivitiesServices.FormData(dataCore)
+	res, row, err := ad.ActivitiesServices.FormData(dataCore)
+	if row == -1 {
+		return c.JSON(http.StatusBadRequest, helper.Responsive{
+			Status:  "Bad Request",
+			Massage: err.Error(),
+			Data:    map[string]interface{}{},
+		})
+	}
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
+		return c.JSON(http.StatusInternalServerError, helper.FailedResponse(err.Error()))
 	}
 
 	dataResp := ToFormResponse(res)

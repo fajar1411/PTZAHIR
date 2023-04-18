@@ -20,7 +20,7 @@ func NewActivities(db *gorm.DB) activities.ActivitiesData {
 }
 
 // FormData implements activities.ActivitiesData
-func (ad *activitiesData) FormData(newActivity activities.ActivitiesEntities) (activities.ActivitiesEntities, error) {
+func (ad *activitiesData) FormData(newActivity activities.ActivitiesEntities) (data activities.ActivitiesEntities, row int, err error) {
 	activitiesGorm := FromEntities(newActivity)
 	tx := ad.db.Create(&activitiesGorm) // proses insert data
 
@@ -32,12 +32,12 @@ func (ad *activitiesData) FormData(newActivity activities.ActivitiesEntities) (a
 		} else {
 			msg = "server error"
 		}
-		return activities.ActivitiesEntities{}, errors.New(msg)
+		return data, 0, errors.New(msg)
 	}
 	newActivity.ID = activitiesGorm.ID
 	newActivity.Createdat = activitiesGorm.CreatedAt
 	newActivity.Updatedat = activitiesGorm.UpdatedAt
-	return newActivity, nil
+	return newActivity, int(tx.RowsAffected), nil
 }
 
 // GetActivity implements activities.ActivitiesData

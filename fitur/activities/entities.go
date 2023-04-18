@@ -13,7 +13,7 @@ type ActivitiesEntities struct {
 }
 
 type ActivitiesService interface {
-	FormData(newActivity ActivitiesEntities) (ActivitiesEntities, error)
+	FormData(newActivity ActivitiesEntities) (data ActivitiesEntities, row int, err error)
 	GetActivity() ([]ActivitiesEntities, error)
 	GetId(id int) (ActivitiesEntities, error)
 	Updata(id int, datup ActivitiesEntities) (ActivitiesEntities, error)
@@ -21,7 +21,7 @@ type ActivitiesService interface {
 }
 
 type ActivitiesData interface {
-	FormData(newActivity ActivitiesEntities) (ActivitiesEntities, error)
+	FormData(newActivity ActivitiesEntities) (data ActivitiesEntities, row int, err error)
 	GetActivity() ([]ActivitiesEntities, error)
 	GetId(id int) (ActivitiesEntities, error)
 	Updata(id int, datup ActivitiesEntities) (ActivitiesEntities, error)

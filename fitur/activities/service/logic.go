@@ -23,18 +23,18 @@ func NewService(ad activities.ActivitiesData, vld *validator.Validate) activitie
 }
 
 // FormData implements activities.ActivitiesService
-func (ac *activitiesCase) FormData(newActivity activities.ActivitiesEntities) (activities.ActivitiesEntities, error) {
+func (ac *activitiesCase) FormData(newActivity activities.ActivitiesEntities) (data activities.ActivitiesEntities, row int, err error) {
 
 	errEmail := ac.vld.Var(newActivity.Email, "required,email")
 	if errEmail != nil {
-		return activities.ActivitiesEntities{}, errors.New("invalid format email")
+		return data, 0, errors.New("invalid format email")
 	}
 	errtitle := ac.vld.Var(newActivity.Title, "required")
 	if errtitle != nil {
-		return activities.ActivitiesEntities{}, errors.New("invalid format email")
+		return activities.ActivitiesEntities{}, -1, errors.New("title cannot be null")
 	}
 
-	res, err := ac.qry.FormData(newActivity)
+	res, row, err := ac.qry.FormData(newActivity)
 	if err != nil {
 		msg2 := ""
 		if strings.Contains(err.Error(), "Duplicate") {
@@ -44,10 +44,10 @@ func (ac *activitiesCase) FormData(newActivity activities.ActivitiesEntities) (a
 		} else {
 			msg2 = "server error"
 		}
-		return activities.ActivitiesEntities{}, errors.New(msg2)
+		return data, -1, errors.New(msg2)
 	}
 
-	return res, nil
+	return res, row, nil
 }
 
 // GetActivity implements activities.ActivitiesService
