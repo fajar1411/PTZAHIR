@@ -97,3 +97,10 @@ func (tc *todoCase) GetAll(activid int) ([]todos.TodoEntities, error) {
 	}
 	return all, nil
 }
+
+// DeleteData implements todos.TodoService
+func (tc *todoCase) DeleteData(id int) (row int, err error) {
+	row, err = tc.qry.DeleteData(id)
+
+	return row, err
+}

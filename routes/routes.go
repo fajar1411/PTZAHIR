@@ -30,5 +30,6 @@ func NewHandlerTodo(Service todos.TodoService, e *echo.Echo) {
 	e.POST("/todo-items", handlers.AddTodo)
 	e.PATCH("/todo-items/:id", handlers.Update)
 	e.GET("/todo-items/:id", handlers.GetAll)
+	e.DELETE("/todo-items/:id", handlers.DeleteData)
 
 }

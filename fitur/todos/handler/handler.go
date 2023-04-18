@@ -77,3 +77,33 @@ func (ad *TodosHandler) GetAll(c echo.Context) error {
 	})
 
 }
+func (th *TodosHandler) DeleteData(c echo.Context) error {
+	id, ercnv := strconv.Atoi(c.Param("id"))
+	strIdTodo := strconv.Itoa(id)
+	if ercnv != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "Invalid ID",
+		})
+	}
+	row, err := th.TodoServices.DeleteData(id)
+	if row == 0 {
+		return c.JSON(http.StatusNotFound, helper.Responsive{
+			Status:  "Not Found",
+			Massage: "Todo with ID " + strIdTodo + " Not Found",
+			Data:    map[string]interface{}{},
+		})
+
+	}
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponsFail{
+			Status:  "Error",
+			Massage: "failed to get data",
+		})
+	}
+	return c.JSON(http.StatusOK, helper.Responsive{
+		Status:  "Success",
+		Massage: "Success",
+		Data:    map[string]interface{}{},
+	})
+}

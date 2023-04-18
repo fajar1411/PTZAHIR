@@ -79,3 +79,14 @@ func (td *todoData) GetAll(activid int) ([]todos.TodoEntities, error) {
 	var activcore = ListModelTOCore(todo)
 	return activcore, nil
 }
+
+// DeleteData implements todos.TodoData
+func (td *todoData) DeleteData(id int) (row int, err error) {
+	var data Todos
+
+	tx := td.db.Unscoped().Delete(&data, id)
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+	return int(tx.RowsAffected), nil
+}
