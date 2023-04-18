@@ -4,7 +4,7 @@ import "time"
 
 type TodoEntities struct {
 	ID           uint
-	Title        string `validate:"required,min=3,required"`
+	Title        string `validate:"required"`
 	Priority     string
 	IsActive     bool
 	Status       string

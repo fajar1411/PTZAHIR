@@ -57,7 +57,7 @@ func (td *todoData) Update(id int, input todos.TodoEntities) (todos.TodoEntities
 		log.Println("update todo query error : data not found")
 		return todos.TodoEntities{}, errors.New("not found")
 	}
-	tx2 := td.db.Raw("SELECT todos.id, todos.title, todos.priority, todos.is_active, todos.created_at, todos.updated_at, todos.todos.activity_group_id  From todos Where todos.id= ?", id).Find(&todo)
+	tx2 := td.db.Raw("SELECT todos.id, todos.title, todos.priority, todos.is_active, todos.created_at, todos.updated_at, todos.activity_group_id  From todos Where todos.id= ?", id).Find(&todo)
 	if tx2.Error != nil {
 		log.Println("All Activities error", tx.Error.Error())
 		return todos.TodoEntities{}, tx2.Error
