@@ -29,7 +29,7 @@ func (ac *activitiesCase) FormData(newActivity activities.ActivitiesEntities) (d
 	if errEmail != nil {
 		return data, -1, errors.New("invalid format email")
 	}
-	errtitle := ac.vld.Var(newActivity.Title, "required")
+	errtitle := ac.vld.Var(newActivity.Name, "required")
 	if errtitle != nil {
 		return data, -1, errors.New("title cannot be null")
 	}
@@ -43,9 +43,9 @@ func (ac *activitiesCase) FormData(newActivity activities.ActivitiesEntities) (d
 }
 
 // GetActivity implements activities.ActivitiesService
-func (ac *activitiesCase) GetActivity() ([]activities.ActivitiesEntities, error) {
-	all, err := ac.qry.GetActivity()
-
+func (ac *activitiesCase) GetActivity(name string, gender string, pagination int, limit int) (data []activities.ActivitiesEntities, totalpage int, err error) {
+	offset := (pagination - 1) * limit
+	data, totalpage, err = ac.qry.GetActivity(name, gender, limit, offset)
 	if err != nil {
 		msg := ""
 		if strings.Contains(err.Error(), "not found") {
@@ -53,12 +53,12 @@ func (ac *activitiesCase) GetActivity() ([]activities.ActivitiesEntities, error)
 		} else {
 			msg = "internal server error"
 		}
-		return nil, errors.New(msg)
+		return nil, 0, errors.New(msg)
 	}
-	return all, nil
+	return data, totalpage, nil
 }
 
-// GetId implements activities.ActivitiesService
+// // GetId implements activities.ActivitiesService
 func (ac *activitiesCase) GetId(id int) (data activities.ActivitiesEntities, row int, err error) {
 	if id <= 0 {
 		log.Println("activities belum terdaftar")
@@ -68,7 +68,7 @@ func (ac *activitiesCase) GetId(id int) (data activities.ActivitiesEntities, row
 	return res, row, err
 }
 
-// Updata implements activities.ActivitiesService
+// // Updata implements activities.ActivitiesService
 func (ac *activitiesCase) Updata(id int, datup activities.ActivitiesEntities) (activities.ActivitiesEntities, error) {
 	if id <= 0 {
 		log.Println("activities belum terdaftar")
@@ -83,12 +83,21 @@ func (ac *activitiesCase) Updata(id int, datup activities.ActivitiesEntities) (a
 			return activities.ActivitiesEntities{}, errors.New(msg)
 		}
 	}
-	title := datup.Title
-	if title != "" {
-		errTitle := ac.vld.Var(title, "required")
-		if errTitle != nil {
-			log.Println("validation error", errTitle)
-			msg := validasi.ValidationErrorHandle(errTitle)
+	Name := datup.Name
+	if Name != "" {
+		errName := ac.vld.Var(Name, "required")
+		if errName != nil {
+			log.Println("validation error", errName)
+			msg := validasi.ValidationErrorHandle(errName)
+			return activities.ActivitiesEntities{}, errors.New(msg)
+		}
+	}
+	Phone := datup.Phone
+	if Phone != "" {
+		errphone := ac.vld.Var(Phone, "required")
+		if errphone != nil {
+			log.Println("validation error", errphone)
+			msg := validasi.ValidationErrorHandle(errphone)
 			return activities.ActivitiesEntities{}, errors.New(msg)
 		}
 	}
@@ -108,7 +117,7 @@ func (ac *activitiesCase) Updata(id int, datup activities.ActivitiesEntities) (a
 	return res, nil
 }
 
-// Delete implements activities.ActivitiesService
+// // Delete implements activities.ActivitiesService
 func (ac *activitiesCase) Delete(id int) error {
 	if id <= 0 {
 		log.Println("Activites not found")

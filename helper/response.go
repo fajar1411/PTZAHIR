@@ -10,6 +10,13 @@ type Responsive struct {
 	Massage string `json:"masssage"`
 	Data    any    `json:"data"`
 }
+type ResponsivePage struct {
+	Status  string `json:"status"`
+	Massage string `json:"masssage"`
+	Data    any    `json:"data"`
+	Page    int    `json:"page"`
+}
+
 type ResponsFail struct {
 	Status  string `json:"status"`
 	Massage string `json:"masssage"`
@@ -21,6 +28,7 @@ func PesanSuksesHelper(msg string) map[string]any {
 		"MSG":    msg,
 	}
 }
+
 func PesanDataBerhasilHelper(data Responsive) map[string]any {
 
 	respon := map[string]any{
@@ -86,4 +94,18 @@ func PesanGagalHelper(msg string) (int, map[string]any) {
 	}
 
 	return code, resp
+}
+
+type PaginationResponse struct {
+	Page        int `json:"page"`
+	Limit       int `json:"limit"`
+	Offset      int `json:"offset"`
+	TotalRecord int `json:"total_record"`
+	TotalPage   int `json:"total_page"`
+}
+
+type WithPagination struct {
+	Pagination PaginationResponse `json:"pagination"`
+	Data       interface{}        `json:"data"`
+	Message    string             `json:"message"`
 }

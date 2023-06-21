@@ -4,11 +4,7 @@ import (
 	activitiesdata "todo/fitur/activities/data"
 	activitiesservice "todo/fitur/activities/service"
 
-	tododata "todo/fitur/todos/data"
-	todoservice "todo/fitur/todos/service"
 	activitieshandler "todo/routes"
-
-	todohandler "todo/routes"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -22,7 +18,7 @@ func InitFactory(e *echo.Echo, db *gorm.DB) {
 	activitiesFaktory := activitiesservice.NewService(activitiesRepofaktory, v)
 	activitieshandler.NewHandlerActivities(activitiesFaktory, e)
 
-	Tododatafaktory := tododata.NewTodo(db)
-	todoserviceFaktory := todoservice.NewService(Tododatafaktory, v)
-	todohandler.NewHandlerTodo(todoserviceFaktory, e)
+	// Tododatafaktory := tododata.NewTodo(db)
+	// todoserviceFaktory := todoservice.NewService(Tododatafaktory, v)
+	// todohandler.NewHandlerTodo(todoserviceFaktory, e)
 }

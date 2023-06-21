@@ -7,8 +7,10 @@ import (
 
 type FormResponse struct {
 	ID        uint      `json:"id"`
-	Title     string    `json:"title"`
+	Name      string    `json:"Name"`
 	Email     string    `json:"email"`
+	Gender    string    `json:"gender"`
+	Phone     string    `json:"phone"`
 	Createdat time.Time `json:"created_At"`
 	Updatedat time.Time `json:"updated_At"`
 }
@@ -16,8 +18,10 @@ type FormResponse struct {
 func ToFormResponse(data activities.ActivitiesEntities) FormResponse {
 	return FormResponse{
 		ID:        data.ID,
-		Title:     data.Title,
+		Name:      data.Name,
 		Email:     data.Email,
+		Phone:     data.Phone,
+		Gender:    data.Gender,
 		Createdat: data.Createdat,
 		Updatedat: data.Updatedat,
 	}

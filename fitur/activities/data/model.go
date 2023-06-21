@@ -8,8 +8,10 @@ import (
 
 type Activities struct {
 	gorm.Model
-	Title string
-	Email string `gorm:"unique;not null"`
+	Gender string
+	Phone  string
+	Name   string
+	Email  string `gorm:"unique;not null"`
 }
 
 // register
@@ -18,8 +20,10 @@ func FromEntities(dataCore activities.ActivitiesEntities) Activities { //fungsi 
 		Model: gorm.Model{ID: dataCore.ID, UpdatedAt: dataCore.Updatedat,
 			CreatedAt: dataCore.Createdat,
 		},
-		Email: dataCore.Email,
-		Title: dataCore.Title,
+		Email:  dataCore.Email,
+		Name:   dataCore.Name,
+		Gender: dataCore.Gender,
+		Phone:  dataCore.Phone,
 	}
 
 }
@@ -28,7 +32,9 @@ func FromEntities(dataCore activities.ActivitiesEntities) Activities { //fungsi 
 func (dataModel *Activities) ModelsToCore() activities.ActivitiesEntities { //fungsi yang mengambil data dari  user gorm(model.go)  dan merubah data ke entities usercore
 	return activities.ActivitiesEntities{
 		ID:        dataModel.ID,
-		Title:     dataModel.Title,
+		Name:      dataModel.Name,
+		Phone:     dataModel.Phone,
+		Gender:    dataModel.Gender,
 		Email:     dataModel.Email,
 		Updatedat: dataModel.UpdatedAt,
 		Createdat: dataModel.CreatedAt,
@@ -45,12 +51,12 @@ func ListModelEntities(datamodel []Activities) []activities.ActivitiesEntities {
 
 }
 
-func ToCore(model Activities) activities.ActivitiesEntities {
-	return activities.ActivitiesEntities{
-		ID:        model.ID,
-		Title:     model.Title,
-		Email:     model.Email,
-		Updatedat: model.UpdatedAt,
-	}
+// func ToCore(model Activities) activities.ActivitiesEntities {
+// 	return activities.ActivitiesEntities{
+// 		ID:        model.ID,
+// 		Title:     model.Title,
+// 		Email:     model.Email,
+// 		Updatedat: model.UpdatedAt,
+// 	}
 
-}
+// }

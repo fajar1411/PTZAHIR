@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"todo/fitur/activities"
@@ -51,17 +52,30 @@ func (ad *ActivitiesHandler) FormData(c echo.Context) error {
 	})
 
 }
-func (ad *ActivitiesHandler) GetActivity(c echo.Context) error {
 
-	res, err := ad.ActivitiesServices.GetActivity()
+func (ad *ActivitiesHandler) GetActivity(c echo.Context) error {
+	pageStr := c.QueryParam("page")
+
+	page, _ := strconv.Atoi(pageStr)
+	nama := c.QueryParam("name")
+	gender := c.QueryParam("gender")
+	limit := 3
+
+	log.Println("nama:", nama)
+	log.Println("geder:", gender)
+
+	res, totalpage, err := ad.ActivitiesServices.GetActivity(nama, gender, page, limit)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
 	}
+
 	dataResp := ListCoreToRespons(res)
-	return c.JSON(http.StatusOK, helper.Responsive{
+
+	return c.JSON(http.StatusOK, helper.ResponsivePage{
 		Status:  "Success",
 		Massage: "Success",
 		Data:    dataResp,
+		Page:    totalpage,
 	})
 
 }
